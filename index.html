@@ -15,10 +15,10 @@
             overflow: hidden;
         }
         .sidebar {
-            width: 460px;
+            width: 440px;
             background: #f8fafc;
             box-shadow: 2px 0 18px rgba(15, 23, 42, 0.16);
-            padding: 18px 18px 34px;
+            padding: 18px;
             overflow-y: auto;
             z-index: 10;
             box-sizing: border-box;
@@ -43,7 +43,7 @@
             background: #fff;
             border: 1px solid #dbe3ee;
             border-radius: 8px;
-            padding: 10px;
+            padding: 8px;
         }
         .summary-card span {
             display: block;
@@ -54,29 +54,29 @@
         }
         .summary-card strong {
             display: block;
-            margin-top: 5px;
+            margin-top: 4px;
             color: #0f172a;
-            font-size: 13px;
-            white-space: pre;
+            font-size: 12px;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .section-tabs {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 14px;
         }
         .section-tab {
             border: 1px solid #cbd5e1;
-            border-radius: 8px;
+            border-radius: 6px;
             background: #fff;
             color: #334155;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
-            padding: 10px 8px;
-            text-align: left;
+            padding: 8px 6px;
+            text-align: center;
         }
         .section-tab.active {
             background: #1e293b;
@@ -92,20 +92,20 @@
             margin-bottom: 14px;
         }
         .field-panel.active { display: block; }
-        .field-panel h3 { margin: 0 0 12px; font-size: 14px; }
+        .field-panel h3 { margin: 0 0 12px; font-size: 13px; }
         .field-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
+            gap: 8px;
         }
         .form-group.full { grid-column: 1 / -1; }
         .field-subtitle {
             grid-column: 1 / -1;
             margin: 4px 0 0;
-            padding-top: 8px;
+            padding-top: 6px;
             border-top: 1px solid #e2e8f0;
             color: #334155;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 800;
             text-transform: uppercase;
         }
@@ -115,11 +115,11 @@
             font-weight: 700;
             color: #64748b;
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .form-group input, .form-group textarea {
             width: 100%;
-            padding: 8px;
+            padding: 6px 8px;
             border: 1px solid #cbd5e1;
             border-radius: 4px;
             font-family: Arial, sans-serif;
@@ -131,39 +131,41 @@
             width: 100%;
             background: #0f766e;
             color: white;
-            padding: 15px;
+            padding: 12px;
             text-align: center;
             border: none;
             border-radius: 6px;
             font-weight: 800;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             margin-top: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
-        .version-note { font-size: 10px; color: #64748b; text-align: center; margin-top: 10px; }
         .preview-area {
             flex: 1;
-            padding: 40px;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             overflow-y: auto;
             background: #3f3f46;
             box-sizing: border-box;
-            padding-bottom: 80px;
         }
         .document-container {
             position: relative;
             width: 794px;
             height: 1123px;
             background: #fff;
-            box-shadow: 0 0 50px rgba(0,0,0,0.45);
+            box-shadow: 0 0 30px rgba(0,0,0,0.4);
+            overflow: hidden;
         }
         .pdf-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            display: block;
+            object-fit: fill;
             user-select: none;
         }
         .overlay-text {
@@ -171,7 +173,7 @@
             background: transparent;
             color: #000;
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 11px;
             line-height: 1.2;
             display: block;
             padding: 0;
@@ -180,13 +182,13 @@
             word-wrap: break-word;
         }
         @media print {
-            @page { size: 794px 1123px; margin: 0; }
-            html, body { width: 794px; height: 1123px; background: #fff; overflow: hidden; }
+            @page { size: A4 portrait; margin: 0; }
+            html, body { width: 100%; height: 100%; background: #fff; overflow: hidden; }
             body { display: block; }
             .sidebar { display: none; }
-            .preview-area { display: block; width: 794px; height: 1123px; padding: 0; margin: 0; background: none; overflow: hidden; }
-            .document-container { position: absolute; left: 0; top: 0; width: 794px; height: 1123px; box-shadow: none; margin: 0; overflow: hidden; }
-            .pdf-bg { width: 794px; height: 1123px; }
+            .preview-area { display: block; width: 100%; height: 100%; padding: 0; margin: 0; background: none; }
+            .document-container { position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; box-shadow: none; margin: 0; }
+            .pdf-bg { width: 100%; height: 100%; }
         }
     </style>
 </head>
@@ -194,13 +196,13 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Nota de Venda</h2>
-            <p>Edite os dados do leilão e do comprador abaixo.</p>
+            <p>Preencha os campos para atualizar a pré-visualização.</p>
         </div>
 
         <div class="dashboard-summary">
-            <div class="summary-card"><span>Nota Nº</span><strong id="sum-nota_num">118835</strong></div>
-            <div class="summary-card"><span>Lote</span><strong id="sum-lote">169</strong></div>
-            <div class="summary-card"><span>Cliente</span><strong id="sum-cliente_nome">VALMIR CORNACHIONE</strong></div>
+            <div class="summary-card"><span>Nota Nº</span><strong id="sum-nota_num">-</strong></div>
+            <div class="summary-card"><span>Lote</span><strong id="sum-lote">-</strong></div>
+            <div class="summary-card"><span>Cliente</span><strong id="sum-cliente_nome">-</strong></div>
         </div>
 
         <div class="section-tabs">
@@ -215,8 +217,8 @@
             <h3>Preenchimento automático</h3>
             <div class="field-grid">
                 <div class="form-group full">
-                    <label>Cole o bloco de texto com os dados da nota</label>
-                    <textarea id="autofill-text" rows="12" placeholder="NOTA: 118835&#10;EMISSAO: 20/05/2025&#10;CLIENTE: VALMIR CORNACHIONE..."></textarea>
+                    <label>Cole o bloco de texto aqui</label>
+                    <textarea id="autofill-text" rows="10" placeholder="NOTA: 118835&#10;EMISSAO: 20/05/2025&#10;CLIENTE: VALMIR CORNACHIONE..."></textarea>
                 </div>
                 <div class="form-group full">
                     <button type="button" class="btn-save" onclick="applyAutoFill()">PREENCHER AUTOMÁTICO</button>
@@ -227,38 +229,38 @@
         <section class="field-panel active" data-panel-content="cabecalho">
             <h3>Dados da Nota de Venda</h3>
             <div class="field-grid">
-                <div class="form-group"><label>Número da Nota</label><input id="field-nota_num" value="118835" oninput="updatePreview('nota_num', this.value)"></div>
-                <div class="form-group"><label>Data de Emissão</label><input id="field-data_emissao" value="20/05/2025" oninput="updatePreview('data_emissao', this.value)"></div>
+                <div class="form-group"><label>Número da Nota</label><input id="field-nota_num" value="" oninput="updatePreview('nota_num', this.value)"></div>
+                <div class="form-group"><label>Data de Emissão</label><input id="field-data_emissao" value="" oninput="updatePreview('data_emissao', this.value)"></div>
                 <div class="field-subtitle">Dados do Leiloeiro</div>
-                <div class="form-group full"><label>Nome Leiloeiro</label><input id="field-leiloeiro" value="Jose Carlos Chagas" oninput="updatePreview('leiloeiro', this.value)"></div>
-                <div class="form-group full"><label>Inscrição JUCESP</label><input id="field-jucesp" value="940" oninput="updatePreview('jucesp', this.value)"></div>
+                <div class="form-group full"><label>Nome Leiloeiro</label><input id="field-leiloeiro" value="" oninput="updatePreview('leiloeiro', this.value)"></div>
+                <div class="form-group full"><label>Inscrição JUCESP</label><input id="field-jucesp" value="" oninput="updatePreview('jucesp', this.value)"></div>
             </div>
         </section>
 
         <section class="field-panel" data-panel-content="destinatario">
             <h3>Destinatário das Mercadorias</h3>
             <div class="field-grid">
-                <div class="form-group"><label>Cod. Cliente</label><input id="field-cod_cliente" value="228449" oninput="updatePreview('cod_cliente', this.value)"></div>
-                <div class="form-group"><label>CPF / CNPJ</label><input id="field-cnpj" value="01.237.725/0001-60" oninput="updatePreview('cnpj', this.value)"></div>
-                <div class="form-group full"><label>Nome do Cliente</label><input id="field-cliente_nome" value="VALMIR CORNACHIONE" oninput="updatePreview('cliente_nome', this.value)"></div>
-                <div class="form-group full"><label>Endereço / CEP</label><input id="field-endereco" value="RUA DO CAFE, 277 300 - CEP:13454171 - JARDIM PEROLA" oninput="updatePreview('endereco', this.value)"></div>
-                <div class="form-group"><label>Município</label><input id="field-municipio" value="SANTA BARBARA DOESTE" oninput="updatePreview('municipio', this.value)"></div>
-                <div class="form-group"><label>Estado (UF)</label><input id="field-uf" value="SP" oninput="updatePreview('uf', this.value)"></div>
-                <div class="form-group full"><label>E-mail</label><input id="field-email" value="valcarcornachione@gmail.com" oninput="updatePreview('email', this.value)"></div>
-                <div class="form-group"><label>Inscr. Estadual</label><input id="field-ie" value="606075745113" oninput="updatePreview('ie', this.value)"></div>
-                <div class="form-group"><label>Leilão Nº</label><input id="field-leilao_num" value="9139" oninput="updatePreview('leilao_num', this.value)"></div>
-                <div class="form-group full"><label>Data do Leilão</label><input id="field-data_leilao" value="15/05/2025" oninput="updatePreview('data_leilao', this.value)"></div>
+                <div class="form-group"><label>Cod. Cliente</label><input id="field-cod_cliente" value="" oninput="updatePreview('cod_cliente', this.value)"></div>
+                <div class="form-group"><label>CPF / CNPJ</label><input id="field-cnpj" value="" oninput="updatePreview('cnpj', this.value)"></div>
+                <div class="form-group full"><label>Nome do Cliente</label><input id="field-cliente_nome" value="" oninput="updatePreview('cliente_nome', this.value)"></div>
+                <div class="form-group full"><label>Endereço / CEP</label><input id="field-endereco" value="" oninput="updatePreview('endereco', this.value)"></div>
+                <div class="form-group"><label>Município</label><input id="field-municipio" value="" oninput="updatePreview('municipio', this.value)"></div>
+                <div class="form-group"><label>Estado (UF)</label><input id="field-uf" value="" oninput="updatePreview('uf', this.value)"></div>
+                <div class="form-group full"><label>E-mail</label><input id="field-email" value="" oninput="updatePreview('email', this.value)"></div>
+                <div class="form-group"><label>Inscr. Estadual</label><input id="field-ie" value="" oninput="updatePreview('ie', this.value)"></div>
+                <div class="form-group"><label>Leilão Nº</label><input id="field-leilao_num" value="" oninput="updatePreview('leilao_num', this.value)"></div>
+                <div class="form-group full"><label>Data do Leilão</label><input id="field-data_leilao" value="" oninput="updatePreview('data_leilao', this.value)"></div>
             </div>
         </section>
 
         <section class="field-panel" data-panel-content="mercadorias">
             <h3>Descrição das Mercadorias</h3>
             <div class="field-grid">
-                <div class="form-group"><label>Lote</label><input id="field-lote" value="169" oninput="updatePreview('lote', this.value)"></div>
-                <div class="form-group"><label>Preço (R$)</label><input id="field-preco_lote" value="39.250,00" oninput="updatePreview('preco_lote', this.value)"></div>
+                <div class="form-group"><label>Lote</label><input id="field-lote" value="" oninput="updatePreview('lote', this.value)"></div>
+                <div class="form-group"><label>Preço (R$)</label><input id="field-preco_lote" value="" oninput="updatePreview('preco_lote', this.value)"></div>
                 <div class="form-group full">
                     <label>Descrição Completa</label>
-                    <textarea id="field-descricao" rows="6" oninput="updatePreview('descricao', this.value)">Código: 965576 Pátio: Pirapora - SP Vaga: 100 Marca: FORD Modelo: RANGER CD Descrição: Ranger CD XLT 3.2 Duratorq TDCi Categoria: Picapes Grandes Placa: AHZ0B51 Ano de Fabricação: 2017 Ano Modelo: 2018 Chassi: 9BFAB22U1HJ061924 Tipo de Chassi: Recortado Combustível: Diesel Número do Sinistro: 960373151791108 Número do Salvado: 960373151791108 Tipo do Documento: Irrecuperável Possui chave: SIM Condição: COLISÃO Grande Monta</textarea>
+                    <textarea id="field-descricao" rows="6" oninput="updatePreview('descricao', this.value)"></textarea>
                 </div>
             </div>
         </section>
@@ -266,14 +268,15 @@
         <section class="field-panel" data-panel-content="valores">
             <h3>Totais da Nota</h3>
             <div class="field-grid">
-                <div class="form-group full"><label>Valor Das Mercadorias</label><input id="field-val_mercadorias" value="39.250,00" oninput="updatePreview('val_mercadorias', this.value)"></div>
-                <div class="form-group full"><label>Comissão de 5%</label><input id="field-comissao" value="1.962,50" oninput="updatePreview('comissao', this.value)"></div>
-                <div class="form-group full"><label>Valor Total da Nota</label><input id="field-val_total" value="41.212,50" oninput="updatePreview('val_total', this.value)"></div>
+                <div class="form-group full"><label>Valor Das Mercadorias</label><input id="field-val_mercadorias" value="" oninput="updatePreview('val_mercadorias', this.value)"></div>
+                <div class="form-group full"><label>Comissão de 5%</label><input id="field-comissao" value="" oninput="updatePreview('comissao', this.value)"></div>
+                <div class="form-group full"><label>Valor Total da Nota</label><input id="field-val_total" value="" oninput="updatePreview('val_total', this.value)"></div>
+                <div class="field-subtitle">Rodapé de Recibo</div>
+                <div class="form-group full"><label>Número Nota Rodapé</label><input id="field-nota_rodape" value="" oninput="updatePreview('nota_rodape', this.value)"></div>
             </div>
         </section>
 
         <button class="btn-save" onclick="window.print()">GERAR PDF / IMPRIMIR</button>
-        <p class="version-note">Nota de Venda Leilão - Modelo Digital</p>
     </div>
 
     <div class="preview-area">
@@ -281,32 +284,35 @@
             <img src="nota-de-venda.png" class="pdf-bg">
 
             <!-- CABEÇALHO DA NOTA -->
-            <div id="pv-leiloeiro" class="overlay-text" style="top: 75px; left: 68px; width: 170px; font-weight: bold; font-size: 16px; text-align: center;">Jose Carlos Chagas</div>
-            <div id="pv-jucesp" class="overlay-text" style="top: 171px; left: 236px; width: 35px; font-size: 10px;">940</div>
-            <div id="pv-nota_num" class="overlay-text" style="top: 88px; left: 742px; width: 100px; font-weight: bold; font-size: 18px;">118835</div>
-            <div id="pv-data_emissao" class="overlay-text" style="top: 147px; left: 788px; width: 100px; font-size: 13px;">20/05/2025</div>
+            <div id="pv-leiloeiro" class="overlay-text" style="top: 75px; left: 55px; width: 175px; font-weight: bold; font-size: 15px; text-align: center;"></div>
+            <div id="pv-jucesp" class="overlay-text" style="top: 171px; left: 236px; width: 35px; font-size: 10px;"></div>
+            <div id="pv-nota_num" class="overlay-text" style="top: 86px; left: 618px; width: 120px; font-weight: bold; font-size: 17px; text-align: center;"></div>
+            <div id="pv-data_emissao" class="overlay-text" style="top: 147px; left: 618px; width: 120px; font-size: 12px; text-align: center;"></div>
 
             <!-- DESTINATÁRIO -->
-            <div id="pv-cod_cliente" class="overlay-text" style="top: 217px; left: 206px; width: 100px; font-weight: bold;">228449</div>
-            <div id="pv-cliente_nome" class="overlay-text" style="top: 242px; left: 206px; width: 500px; font-weight: bold;">VALMIR CORNACHIONE</div>
-            <div id="pv-endereco" class="overlay-text" style="top: 268px; left: 206px; width: 550px;">RUA DO CAFE, 277 300 - CEP:13454171 - JARDIM PEROLA</div>
-            <div id="pv-municipio" class="overlay-text" style="top: 293px; left: 140px; width: 250px;">SANTA BARBARA DOESTE</div>
-            <div id="pv-uf" class="overlay-text" style="top: 293px; left: 546px; width: 30px;">SP</div>
-            <div id="pv-email" class="overlay-text" style="top: 293px; left: 712px; width: 220px;">valcarcornachione@gmail.com</div>
-            <div id="pv-cnpj" class="overlay-text" style="top: 318px; left: 198px; width: 180px;">01.237.725/0001-60</div>
-            <div id="pv-ie" class="overlay-text" style="top: 318px; left: 606px; width: 150px;">606075745113</div>
-            <div id="pv-leilao_num" class="overlay-text" style="top: 342px; left: 120px; width: 80px;">9139</div>
-            <div id="pv-data_leilao" class="overlay-text" style="top: 342px; left: 638px; width: 100px;">15/05/2025</div>
+            <div id="pv-cod_cliente" class="overlay-text" style="top: 218px; left: 165px; width: 100px; font-weight: bold;"></div>
+            <div id="pv-cliente_nome" class="overlay-text" style="top: 243px; left: 165px; width: 550px; font-weight: bold;"></div>
+            <div id="pv-endereco" class="overlay-text" style="top: 268px; left: 165px; width: 560px;"></div>
+            <div id="pv-municipio" class="overlay-text" style="top: 293px; left: 110px; width: 280px;"></div>
+            <div id="pv-uf" class="overlay-text" style="top: 293px; left: 470px; width: 30px;"></div>
+            <div id="pv-email" class="overlay-text" style="top: 293px; left: 565px; width: 165px;"></div>
+            <div id="pv-cnpj" class="overlay-text" style="top: 318px; left: 160px; width: 200px;"></div>
+            <div id="pv-ie" class="overlay-text" style="top: 318px; left: 512px; width: 200px;"></div>
+            <div id="pv-leilao_num" class="overlay-text" style="top: 342px; left: 95px; width: 100px;"></div>
+            <div id="pv-data_leilao" class="overlay-text" style="top: 342px; left: 512px; width: 120px;"></div>
 
             <!-- TABELA DE MERCADORIAS -->
-            <div id="pv-lote" class="overlay-text" style="top: 393px; left: 58px; width: 35px; text-align: center;">169</div>
-            <div id="pv-descricao" class="overlay-text" style="top: 393px; left: 104px; width: 552px; font-size: 11px; line-height: 1.25;">Código: 965576 Pátio: Pirapora - SP Vaga: 100 Marca: FORD Modelo: RANGER CD Descrição: Ranger CD XLT 3.2 Duratorq TDCi Categoria: Picapes Grandes Placa: AHZ0B51 Ano de Fabricação: 2017 Ano Modelo: 2018 Chassi: 9BFAB22U1HJ061924 Tipo de Chassi: Recortado Combustível: Diesel Número do Sinistro: 960373151791108 Número do Salvado: 960373151791108 Tipo do Documento: Irrecuperável Possui chave: SIM Condição: COLISÃO Grande Monta</div>
-            <div id="pv-preco_lote" class="overlay-text" style="top: 393px; left: 850px; width: 80px; text-align: right;">39.250,00</div>
+            <div id="pv-lote" class="overlay-text" style="top: 393px; left: 45px; width: 30px; text-align: center;"></div>
+            <div id="pv-descricao" class="overlay-text" style="top: 393px; left: 85px; width: 570px; font-size: 11px; line-height: 1.25;"></div>
+            <div id="pv-preco_lote" class="overlay-text" style="top: 393px; left: 665px; width: 75px; text-align: right;"></div>
 
             <!-- TOTAIS E VALORES -->
-            <div id="pv-val_mercadorias" class="overlay-text" style="top: 803px; left: 850px; width: 80px; text-align: right;">39.250,00</div>
-            <div id="pv-comissao" class="overlay-text" style="top: 825px; left: 850px; width: 80px; text-align: right;">1.962,50</div>
-            <div id="pv-val_total" class="overlay-text" style="top: 847px; left: 850px; width: 80px; text-align: right; font-weight: bold;">41.212,50</div>
+            <div id="pv-val_mercadorias" class="overlay-text" style="top: 803px; left: 665px; width: 75px; text-align: right;"></div>
+            <div id="pv-comissao" class="overlay-text" style="top: 825px; left: 665px; width: 75px; text-align: right;"></div>
+            <div id="pv-val_total" class="overlay-text" style="top: 847px; left: 665px; width: 75px; text-align: right; font-weight: bold;"></div>
+
+            <!-- RODAPÉ DA NOTA -->
+            <div id="pv-nota_rodape" class="overlay-text" style="top: 912px; left: 95px; width: 90px; text-align: center; font-weight: bold; font-size: 14px;"></div>
         </div>
     </div>
 
@@ -325,6 +331,14 @@
             if (previewEl) previewEl.innerText = val;
             const summaryEl = document.getElementById('sum-' + id);
             if (summaryEl) summaryEl.innerText = val || '-';
+            if (id === 'nota_num' && !document.getElementById('field-nota_rodape').value) {
+                const rodapeInput = document.getElementById('field-nota_rodape');
+                if (rodapeInput) {
+                    rodapeInput.value = val;
+                    const rodapePreview = document.getElementById('pv-nota_rodape');
+                    if (rodapePreview) rodapePreview.innerText = val;
+                }
+            }
         }
 
         function applyAutoFill() {
