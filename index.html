@@ -12,7 +12,7 @@
             height: 100vh;
             background: #eef2f7;
             color: #0f172a;
-            font-family: Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
             overflow: hidden;
         }
         .sidebar {
@@ -57,7 +57,7 @@
         .field-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         .form-group.full { grid-column: 1 / -1; }
         .form-group label { display: block; font-size: 10px; font-weight: 700; color: #64748b; margin-bottom: 3px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; }
 
         .btn-save { width: 100%; background: #0070f3; color: white; padding: 14px; border: none; border-radius: 6px; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; }
         .btn-print { width: 100%; background: #0f766e; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; margin-top: 10px; }
@@ -81,6 +81,7 @@
             flex-direction: column;
             gap: 8px;
             font-size: 11px;
+            font-family: Arial, Helvetica, sans-serif;
         }
         .box { border: 2px solid #000; border-radius: 6px; padding: 6px; position: relative; }
         .grid-header { display: grid; grid-template-columns: 2fr 3fr 2fr; gap: 8px; height: 140px; }
@@ -92,13 +93,13 @@
         .col-2 { grid-column: span 2; }
         
         .label-title { font-size: 9px; font-weight: bold; color: #333; text-transform: uppercase; margin-bottom: 2px; }
-        .val-text { font-size: 12px; font-weight: bold; min-height: 14px; color: #000; }
+        .val-text { font-size: 11px; font-weight: bold; min-height: 14px; color: #000; font-family: Arial, Helvetica, sans-serif; }
         
         .table-items { border: 2px solid #000; border-radius: 6px; flex: 1; display: flex; flex-direction: column; }
-        .table-head { display: flex; border-bottom: 2px solid #000; font-weight: bold; text-align: center; background: #f8fafc; }
+        .table-head { display: flex; border-bottom: 2px solid #000; font-weight: bold; text-align: center; background: #f8fafc; font-size: 11px; }
         .table-body { display: flex; flex: 1; }
         .col-lote { width: 60px; border-right: 2px solid #000; padding: 6px; text-align: center; }
-        .col-desc { flex: 1; border-right: 2px solid #000; padding: 6px; white-space: pre-wrap; font-family: monospace; font-size: 11px; }
+        .col-desc { flex: 1; border-right: 2px solid #000; padding: 6px; white-space: pre-wrap; font-family: Arial, Helvetica, sans-serif; font-size: 11px; line-height: 1.35; color: #000; }
         .col-preco { width: 110px; padding: 6px; text-align: right; }
         
         .grid-foot { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; }
@@ -289,7 +290,6 @@
             lines.forEach(line => {
                 const parts = line.split(':');
                 if (parts.length >= 2) {
-                    // Limpa caracteres especiais, emojis e converte para maiúsculas
                     const cleanKey = parts[0].replace(/[^a-zA-Z0-9À-ÿ\s]/g, '').trim().toUpperCase();
                     const cleanVal = parts.slice(1).join(':').trim();
                     if (cleanKey && cleanVal) {
@@ -298,7 +298,6 @@
                 }
             });
 
-            // Extração flexível dos dados do Proprietário / Destinatário
             const nome = data['NOME'] || data['NOME CLIENTE'] || data['CLIENTE'] || data['PROPRIETARIO'];
             const doc = data['DOCUMENTO'] || data['CPF'] || data['CNPJ'] || data['DOC PROPRIETARIO'];
             const emplacamento = data['EMPLACAMENTO'] || data['CIDADE'] || data['MUNICIPIO'];
@@ -312,7 +311,6 @@
                 if (parts[1]) update('uf', parts[1].trim());
             }
 
-            // Construção da Descrição Completa do Veículo
             let descParts = [];
 
             const modelo = data['MODELO'] || data['VEICULO'];
@@ -339,7 +337,6 @@
                 update('descricao', descParts.join('\n'));
             }
 
-            // Campos padrão da Nota de Venda
             if (data['NOTA'] || data['NUMERO DA NOTA']) update('nota_num', data['NOTA'] || data['NUMERO DA NOTA']);
             if (data['EMISSAO'] || data['DATA DE EMISSAO']) update('data_emissao', data['EMISSAO'] || data['DATA DE EMISSAO']);
             if (data['LOTE']) update('lote', data['LOTE']);
