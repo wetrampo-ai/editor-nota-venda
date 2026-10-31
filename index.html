@@ -130,10 +130,10 @@
 
         <section class="field-panel active" id="panel-auto">
             <h3>Preenchimento automático</h3>
-            <p style="font-size: 11px; color: #64748b;">Cole o relatório do veículo ou dados da nota abaixo:</p>
+            <p style="font-size: 11px; color: #64748b;">Cole o relatório completo do veículo abaixo:</p>
             <div class="field-grid">
                 <div class="form-group full">
-                    <textarea id="autofill-text" rows="14" placeholder="Cole aqui o relatório de veículos ou dados da nota..."></textarea>
+                    <textarea id="autofill-text" rows="14" placeholder="Cole aqui o relatório..."></textarea>
                 </div>
                 <div class="form-group full">
                     <button type="button" class="btn-save" onclick="applyAutoFill()">PREENCHER AUTOMÁTICO</button>
@@ -146,7 +146,7 @@
                 <div class="form-group"><label>Número da Nota</label><input id="field-nota_num" oninput="update('nota_num', this.value)"></div>
                 <div class="form-group"><label>Data de Emissão</label><input id="field-data_emissao" oninput="update('data_emissao', this.value)"></div>
                 <div class="form-group full"><label>Leiloeiro</label><input id="field-leiloeiro" oninput="update('leiloeiro', this.value)"></div>
-                <div class="form-group full"><label>JUCESP</label><input id="field-jucesp" oninput="update('jucesp', this.value)"></div>
+                <div class="form-group full"><label>JUCESP (Inscrição)</label><input id="field-jucesp" oninput="update('jucesp', this.value)"></div>
             </div>
         </section>
 
@@ -169,6 +169,8 @@
             <div class="field-grid">
                 <div class="form-group"><label>Lote</label><input id="field-lote" oninput="update('lote', this.value)"></div>
                 <div class="form-group"><label>Preço (R$)</label><input id="field-preco_lote" oninput="update('preco_lote', this.value)"></div>
+                <div class="form-group"><label>Pátio</label><input id="field-patio" oninput="update('patio', this.value)"></div>
+                <div class="form-group"><label>Vaga</label><input id="field-vaga" oninput="update('vaga', this.value)"></div>
                 <div class="form-group full"><label>Descrição Completa</label><textarea id="field-descricao" rows="8" oninput="update('descricao', this.value)"></textarea></div>
             </div>
         </section>
@@ -196,6 +198,8 @@
                 </div>
                 <div class="box">
                     <div class="label-title">Local da Retirada:</div>
+                    <div class="val-text" id="pv-patio" style="font-size: 11px; margin-top: 15px; text-align: center;"></div>
+                    <div class="val-text" id="pv-vaga" style="font-size: 11px; margin-top: 5px; text-align: center;"></div>
                 </div>
                 <div class="box" style="text-align: center;">
                     <div style="font-weight: bold; font-size: 16px; margin-top: 5px;">NOTA DE VENDA</div>
@@ -298,56 +302,50 @@
                 }
             });
 
-            const nome = data['NOME'] || data['NOME CLIENTE'] || data['CLIENTE'] || data['PROPRIETARIO'];
-            const doc = data['DOCUMENTO'] || data['CPF'] || data['CNPJ'] || data['DOC PROPRIETARIO'];
-            const emplacamento = data['EMPLACAMENTO'] || data['CIDADE'] || data['MUNICIPIO'];
-
-            if (nome) update('cliente_nome', nome);
-            if (doc) update('cnpj', doc);
-
-            if (emplacamento) {
-                const parts = emplacamento.split('/');
-                if (parts[0]) update('municipio', parts[0].trim());
-                if (parts[1]) update('uf', parts[1].trim());
-            }
-
-            let descParts = [];
-
-            const modelo = data['MODELO'] || data['VEICULO'];
-            const placa = data['PLACA'];
-            const chassi = data['CHASSI'];
-            const renavam = data['RENAVAM'];
-            const ano = data['ANO FABMOD'] || data['ANO FABRICAÇÃO'] || data['ANO'];
-            const cor = data['COR'];
-            const comb = data['COMBUSTÍVEL'] || data['COMBUSTIVEL'];
-            const motor = data['NÚMERO DO MOTOR'] || data['NUMERO DO MOTOR'] || data['MOTOR'];
-            const restricao = data['RESTRIÇÃO 1'] || data['RESTRICAO 1'] || data['RESTRIÇÃO'];
-
-            if (modelo) descParts.push(`Modelo: ${modelo}`);
-            if (placa) descParts.push(`Placa: ${placa}`);
-            if (chassi) descParts.push(`Chassi: ${chassi}`);
-            if (renavam) descParts.push(`Renavam: ${renavam}`);
-            if (ano) descParts.push(`Ano Fab/Mod: ${ano}`);
-            if (cor) descParts.push(`Cor: ${cor}`);
-            if (comb) descParts.push(`Combustível: ${comb}`);
-            if (motor) descParts.push(`Nº Motor: ${motor}`);
-            if (restricao) descParts.push(`Restrição: ${restricao}`);
-
-            if (descParts.length > 0) {
-                update('descricao', descParts.join('\n'));
-            }
-
-            if (data['NOTA'] || data['NUMERO DA NOTA']) update('nota_num', data['NOTA'] || data['NUMERO DA NOTA']);
-            if (data['EMISSAO'] || data['DATA DE EMISSAO']) update('data_emissao', data['EMISSAO'] || data['DATA DE EMISSAO']);
-            if (data['LOTE']) update('lote', data['LOTE']);
-            if (data['PRECO'] || data['VALOR']) update('preco_lote', data['PRECO'] || data['VALOR']);
-            if (data['VALOR MERCADORIAS']) update('val_mercadorias', data['VALOR MERCADORIAS']);
-            if (data['COMISSAO']) update('comissao', data['COMISSAO']);
-            if (data['TOTAL'] || data['VALOR TOTAL']) update('val_total', data['TOTAL'] || data['VALOR TOTAL']);
+            // Preenchimento de campos gerais e do veículo
+            if (data['NOTA']) update('nota_num', data['NOTA']);
+            if (data['EMISSAO']) update('data_emissao', data['EMISSAO']);
             if (data['LEILOEIRO']) update('leiloeiro', data['LEILOEIRO']);
             if (data['JUCESP']) update('jucesp', data['JUCESP']);
+            if (data['LOTE']) update('lote', data['LOTE']);
+            if (data['PRECO']) update('preco_lote', data['PRECO']);
+            if (data['VALOR MERCADORIAS']) update('val_mercadorias', data['VALOR MERCADORIAS']);
+            if (data['COMISSAO']) update('comissao', data['COMISSAO']);
+            if (data['TOTAL']) update('val_total', data['TOTAL']);
+            if (data['PATIO']) update('patio', 'Pátio: ' + data['PATIO']);
+            if (data['VAGA']) update('vaga', 'Vaga: ' + data['VAGA']);
 
-            alert('Dados processados e preenchidos!');
+            // Proprietário / Destinatário
+            if (data['NOME']) update('cliente_nome', data['NOME']);
+            if (data['DOCUMENTO']) update('cnpj', data['DOCUMENTO']);
+            if (data['ENDERECO']) update('endereco', data['ENDERECO']);
+            if (data['MUNICIPIO']) update('municipio', data['MUNICIPIO']);
+            if (data['UF']) update('uf', data['UF']);
+            if (data['EMAIL']) update('email', data['EMAIL']);
+            if (data['INSCR ESTADUAL']) update('ie', data['INSCR ESTADUAL']);
+            if (data['LEILAO']) update('leilao_num', data['LEILAO']);
+            if (data['DATA LEILAO']) update('data_leilao', data['DATA LEILAO']);
+
+            // Descrição rica do veículo
+            let descParts = [];
+            if (data['MODELO']) descParts.push(`Modelo: ${data['MODELO']}`);
+            if (data['PLACA']) descParts.push(`Placa: ${data['PLACA']}`);
+            if (data['CHASSI']) descParts.push(`Chassi: ${data['CHASSI']}`);
+            if (data['RENAVAM']) descParts.push(`Renavam: ${data['RENAVAM']}`);
+            if (data['ANO FABMOD']) descParts.push(`Ano Fab/Mod: ${data['ANO FABMOD']}`);
+            if (data['COR']) descParts.push(`Cor: ${data['COR']}`);
+            if (data['COMBUSTIVEL']) descParts.push(`Combustível: ${data['COMBUSTIVEL']}`);
+            if (data['NUMERO DO MOTOR']) descParts.push(`Nº Motor: ${data['NUMERO DO MOTOR']}`);
+            if (data['POTENCIA']) descParts.push(`Potência: ${data['POTENCIA']}`);
+            if (data['CILINDRADAS']) descParts.push(`Cilindradas: ${data['CILINDRADAS']}`);
+            if (data['LOTACAO']) descParts.push(`Lotação: ${data['LOTACAO']}`);
+            if (data['RESTRICAO 1']) descParts.push(`Restrição: ${data['RESTRICAO 1']}`);
+
+            if (descParts.length > 0) {
+                update('descricao', descParts.join(' | '));
+            }
+
+            alert('Preenchimento automático concluído com sucesso!');
         }
     </script>
 </body>
