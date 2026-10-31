@@ -117,7 +117,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Editor de Nota de Venda</h2>
-            <p>Preenchimento rápido e automático</p>
+            <p>Preenchimento automático estendido</p>
         </div>
 
         <div class="section-tabs">
@@ -130,13 +130,13 @@
 
         <section class="field-panel active" id="panel-auto">
             <h3>Preenchimento automático</h3>
-            <p style="font-size: 11px; color: #64748b;">Cole o relatório completo do veículo abaixo:</p>
+            <p style="font-size: 11px; color: #64748b;">Cole o bloco de dados abaixo:</p>
             <div class="field-grid">
                 <div class="form-group full">
-                    <textarea id="autofill-text" rows="14" placeholder="Cole aqui o relatório..."></textarea>
+                    <textarea id="autofill-text" rows="14" placeholder="Cole aqui os dados..."></textarea>
                 </div>
                 <div class="form-group full">
-                    <button type="button" class="btn-save" onclick="applyAutoFill()">PREENCHER AUTOMÁTICO</button>
+                    <button type="button" class="btn-save" onclick="applyAutoFill()">PREENCHER TUDO</button>
                 </div>
             </div>
         </section>
@@ -146,7 +146,7 @@
                 <div class="form-group"><label>Número da Nota</label><input id="field-nota_num" oninput="update('nota_num', this.value)"></div>
                 <div class="form-group"><label>Data de Emissão</label><input id="field-data_emissao" oninput="update('data_emissao', this.value)"></div>
                 <div class="form-group full"><label>Leiloeiro</label><input id="field-leiloeiro" oninput="update('leiloeiro', this.value)"></div>
-                <div class="form-group full"><label>JUCESP (Inscrição)</label><input id="field-jucesp" oninput="update('jucesp', this.value)"></div>
+                <div class="form-group full"><label>JUCESP</label><input id="field-jucesp" oninput="update('jucesp', this.value)"></div>
             </div>
         </section>
 
@@ -198,8 +198,8 @@
                 </div>
                 <div class="box">
                     <div class="label-title">Local da Retirada:</div>
-                    <div class="val-text" id="pv-patio" style="font-size: 11px; margin-top: 15px; text-align: center;"></div>
-                    <div class="val-text" id="pv-vaga" style="font-size: 11px; margin-top: 5px; text-align: center;"></div>
+                    <div class="val-text" id="pv-patio" style="font-size: 10px; margin-top: 10px; text-align: center;"></div>
+                    <div class="val-text" id="pv-vaga" style="font-size: 10px; margin-top: 4px; text-align: center;"></div>
                 </div>
                 <div class="box" style="text-align: center;">
                     <div style="font-weight: bold; font-size: 16px; margin-top: 5px;">NOTA DE VENDA</div>
@@ -276,15 +276,15 @@
 
         function update(id, val) {
             const el = document.getElementById('pv-' + id);
-            if (el) el.innerText = val;
+            if (el) el.innerText = val || '';
             const input = document.getElementById('field-' + id);
-            if (input && input.value !== val) input.value = val;
+            if (input && input.value !== val) input.value = val || '';
         }
 
         function applyAutoFill() {
             const rawText = document.getElementById('autofill-text').value;
             if (!rawText.trim()) {
-                alert('Por favor, cole um texto com dados para preencher.');
+                alert('Por favor, cole o texto de preenchimento.');
                 return;
             }
 
@@ -296,37 +296,38 @@
                 if (parts.length >= 2) {
                     const cleanKey = parts[0].replace(/[^a-zA-Z0-9À-ÿ\s]/g, '').trim().toUpperCase();
                     const cleanVal = parts.slice(1).join(':').trim();
-                    if (cleanKey && cleanVal) {
+                    if (cleanKey) {
                         data[cleanKey] = cleanVal;
                     }
                 }
             });
 
-            // Preenchimento de campos gerais e do veículo
-            if (data['NOTA']) update('nota_num', data['NOTA']);
-            if (data['EMISSAO']) update('data_emissao', data['EMISSAO']);
-            if (data['LEILOEIRO']) update('leiloeiro', data['LEILOEIRO']);
-            if (data['JUCESP']) update('jucesp', data['JUCESP']);
-            if (data['LOTE']) update('lote', data['LOTE']);
-            if (data['PRECO']) update('preco_lote', data['PRECO']);
-            if (data['VALOR MERCADORIAS']) update('val_mercadorias', data['VALOR MERCADORIAS']);
-            if (data['COMISSAO']) update('comissao', data['COMISSAO']);
-            if (data['TOTAL']) update('val_total', data['TOTAL']);
+            // Mapeamento direto e completo
+            update('nota_num', data['NOTA'] || data['NUMERO DA NOTA'] || '');
+            update('data_emissao', data['EMISSAO'] || data['DATA DE EMISSAO'] || '');
+            update('leiloeiro', data['LEILOEIRO'] || '');
+            update('jucesp', data['JUCESP'] || '');
+            update('lote', data['LOTE'] || '');
+            update('preco_lote', data['PRECO'] || data['VALOR'] || '');
+            update('val_mercadorias', data['VALOR MERCADORIAS'] || data['PRECO'] || '');
+            update('comissao', data['COMISSAO'] || '');
+            update('val_total', data['TOTAL'] || data['VALOR TOTAL'] || '');
+
             if (data['PATIO']) update('patio', 'Pátio: ' + data['PATIO']);
             if (data['VAGA']) update('vaga', 'Vaga: ' + data['VAGA']);
 
-            // Proprietário / Destinatário
-            if (data['NOME']) update('cliente_nome', data['NOME']);
-            if (data['DOCUMENTO']) update('cnpj', data['DOCUMENTO']);
-            if (data['ENDERECO']) update('endereco', data['ENDERECO']);
-            if (data['MUNICIPIO']) update('municipio', data['MUNICIPIO']);
-            if (data['UF']) update('uf', data['UF']);
-            if (data['EMAIL']) update('email', data['EMAIL']);
-            if (data['INSCR ESTADUAL']) update('ie', data['INSCR ESTADUAL']);
-            if (data['LEILAO']) update('leilao_num', data['LEILAO']);
-            if (data['DATA LEILAO']) update('data_leilao', data['DATA LEILAO']);
+            update('cod_cliente', data['CODIGO CLIENTE'] || data['COD CLIENTE'] || '');
+            update('cliente_nome', data['NOME'] || data['NOME CLIENTE'] || data['PROPRIETARIO'] || '');
+            update('cnpj', data['DOCUMENTO'] || data['CPF'] || data['CNPJ'] || '');
+            update('endereco', data['ENDERECO'] || '');
+            update('municipio', data['MUNICIPIO'] || '');
+            update('uf', data['UF'] || '');
+            update('email', data['EMAIL'] || '');
+            update('ie', data['INSCR ESTADUAL'] || data['IE'] || '');
+            update('leilao_num', data['LEILAO'] || '');
+            update('data_leilao', data['DATA LEILAO'] || '');
 
-            // Descrição rica do veículo
+            // Montagem da Descrição das Mercadorias
             let descParts = [];
             if (data['MODELO']) descParts.push(`Modelo: ${data['MODELO']}`);
             if (data['PLACA']) descParts.push(`Placa: ${data['PLACA']}`);
@@ -345,7 +346,7 @@
                 update('descricao', descParts.join(' | '));
             }
 
-            alert('Preenchimento automático concluído com sucesso!');
+            alert('Todos os campos foram preenchidos com sucesso!');
         }
     </script>
 </body>
