@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Nota de Venda - Editor</title>
     <style>
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             padding: 0;
@@ -11,7 +12,7 @@
             height: 100vh;
             background: #eef2f7;
             color: #0f172a;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             overflow: hidden;
         }
         .sidebar {
@@ -21,46 +22,17 @@
             padding: 18px;
             overflow-y: auto;
             z-index: 10;
-            box-sizing: border-box;
         }
         .sidebar-header {
             background: #1e293b;
             color: #fff;
             border-radius: 8px;
-            padding: 16px;
+            padding: 14px;
             margin-bottom: 14px;
         }
-        .sidebar-header h2 { margin: 0; font-size: 19px; }
-        .sidebar-header p { margin: 6px 0 0; color: #cbd5e1; font-size: 12px; }
+        .sidebar-header h2 { margin: 0; font-size: 18px; }
+        .sidebar-header p { margin: 4px 0 0; color: #cbd5e1; font-size: 12px; }
         
-        .dashboard-summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-        .summary-card {
-            background: #fff;
-            border: 1px solid #dbe3ee;
-            border-radius: 8px;
-            padding: 8px;
-        }
-        .summary-card span {
-            display: block;
-            color: #64748b;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .summary-card strong {
-            display: block;
-            margin-top: 4px;
-            color: #0f172a;
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
         .section-tabs {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -76,310 +48,214 @@
             font-size: 11px;
             font-weight: 800;
             padding: 8px 6px;
-            text-align: center;
         }
-        .section-tab.active {
-            background: #1e293b;
-            border-color: #1e293b;
-            color: #fff;
-        }
-        .field-panel {
-            display: none;
-            background: #fff;
-            border: 1px solid #dbe3ee;
-            border-radius: 8px;
-            padding: 14px;
-            margin-bottom: 14px;
-        }
+        .section-tab.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+        
+        .field-panel { display: none; background: #fff; border: 1px solid #dbe3ee; border-radius: 8px; padding: 14px; margin-bottom: 14px; }
         .field-panel.active { display: block; }
-        .field-panel h3 { margin: 0 0 12px; font-size: 13px; }
-        .field-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
-        }
+        
+        .field-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         .form-group.full { grid-column: 1 / -1; }
-        .field-subtitle {
-            grid-column: 1 / -1;
-            margin: 4px 0 0;
-            padding-top: 6px;
-            border-top: 1px solid #e2e8f0;
-            color: #334155;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-        .form-group label {
-            display: block;
-            font-size: 10px;
-            font-weight: 700;
-            color: #64748b;
-            text-transform: uppercase;
-            margin-bottom: 3px;
-        }
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 6px 8px;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            box-sizing: border-box;
-        }
-        .btn-save {
-            display: block;
-            width: 100%;
-            background: #0f766e;
-            color: white;
-            padding: 12px;
-            text-align: center;
-            border: none;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 15px;
-            cursor: pointer;
-            margin-top: 8px;
-            margin-bottom: 8px;
-        }
+        .form-group label { display: block; font-size: 10px; font-weight: 700; color: #64748b; margin-bottom: 3px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; }
+
+        .btn-save { width: 100%; background: #0f766e; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; }
+
         .preview-area {
             flex: 1;
             padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
             overflow-y: auto;
             background: #3f3f46;
-            box-sizing: border-box;
         }
+        
+        /* ESTRUTURA DA NOTA DIGITAL (SEM DEPENDER DE IMAGEM) */
         .document-container {
-            position: relative;
             width: 794px;
             height: 1123px;
             background: #fff;
-            box-shadow: 0 0 30px rgba(0,0,0,0.4);
-            overflow: hidden;
-        }
-        .pdf-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: fill;
-            user-select: none;
-        }
-        .overlay-text {
-            position: absolute;
-            background: transparent;
-            color: #000;
-            font-family: Arial, sans-serif;
+            padding: 25px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             font-size: 11px;
-            line-height: 1.2;
-            display: block;
-            padding: 0;
-            pointer-events: none;
-            white-space: pre-wrap;
-            word-wrap: break-word;
         }
+        .box { border: 2px solid #000; border-radius: 6px; padding: 6px; position: relative; }
+        .grid-header { display: grid; grid-template-columns: 2fr 3fr 2fr; gap: 8px; height: 140px; }
+        .grid-destinatario { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; }
+        .col-12 { grid-column: span 12; }
+        .col-6 { grid-column: span 6; }
+        .col-4 { grid-column: span 4; }
+        .col-3 { grid-column: span 3; }
+        
+        .label-title { font-size: 9px; font-weight: bold; color: #333; text-transform: uppercase; margin-bottom: 2px; }
+        .val-text { font-size: 12px; font-weight: bold; min-height: 14px; color: #000; }
+        
+        .table-items { border: 2px solid #000; border-radius: 6px; flex: 1; display: flex; flex-direction: column; }
+        .table-head { display: flex; border-bottom: 2px solid #000; font-weight: bold; text-align: center; background: #f8fafc; }
+        .table-body { display: flex; flex: 1; }
+        .col-lote { width: 60px; border-right: 2px solid #000; padding: 6px; text-align: center; }
+        .col-desc { flex: 1; border-right: 2px solid #000; padding: 6px; white-space: pre-wrap; }
+        .col-preco { width: 110px; padding: 6px; text-align: right; }
+        
+        .grid-foot { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; }
+        .foot-notice { font-size: 8px; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; }
+        .totais-row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; }
+
         @media print {
-            @page { size: A4 portrait; margin: 0; }
-            html, body { width: 100%; height: 100%; background: #fff; overflow: hidden; }
-            body { display: block; }
             .sidebar { display: none; }
-            .preview-area { display: block; width: 100%; height: 100%; padding: 0; margin: 0; background: none; }
-            .document-container { position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; box-shadow: none; margin: 0; }
-            .pdf-bg { width: 100%; height: 100%; }
+            .preview-area { padding: 0; background: none; }
+            .document-container { box-shadow: none; width: 100%; height: 100vh; }
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>Nota de Venda</h2>
-            <p>Preencha os campos para atualizar a pré-visualização.</p>
-        </div>
-
-        <div class="dashboard-summary">
-            <div class="summary-card"><span>Nota Nº</span><strong id="sum-nota_num">-</strong></div>
-            <div class="summary-card"><span>Lote</span><strong id="sum-lote">-</strong></div>
-            <div class="summary-card"><span>Cliente</span><strong id="sum-cliente_nome">-</strong></div>
+            <h2>Editor de Nota de Venda</h2>
+            <p>Preencha os campos abaixo</p>
         </div>
 
         <div class="section-tabs">
-            <button type="button" class="section-tab active" data-panel="cabecalho" onclick="showPanel('cabecalho')">Nota / Emissão</button>
-            <button type="button" class="section-tab" data-panel="destinatario" onclick="showPanel('destinatario')">Destinatário</button>
-            <button type="button" class="section-tab" data-panel="mercadorias" onclick="showPanel('mercadorias')">Mercadorias</button>
-            <button type="button" class="section-tab" data-panel="valores" onclick="showPanel('valores')">Valores</button>
-            <button type="button" class="section-tab" data-panel="auto" onclick="showPanel('auto')">Auto preencher</button>
+            <button class="section-tab active" onclick="showPanel('cabecalho')">Cabeçalho</button>
+            <button class="section-tab" onclick="showPanel('destinatario')">Destinatário</button>
+            <button class="section-tab" onclick="showPanel('mercadorias')">Mercadorias</button>
+            <button class="section-tab" onclick="showPanel('valores')">Valores</button>
         </div>
 
-        <section class="field-panel" data-panel-content="auto">
-            <h3>Preenchimento automático</h3>
+        <section class="field-panel active" id="panel-cabecalho">
             <div class="field-grid">
-                <div class="form-group full">
-                    <label>Cole o bloco de texto aqui</label>
-                    <textarea id="autofill-text" rows="10" placeholder="NOTA: 118835&#10;EMISSAO: 20/05/2025&#10;CLIENTE: VALMIR CORNACHIONE..."></textarea>
-                </div>
-                <div class="form-group full">
-                    <button type="button" class="btn-save" onclick="applyAutoFill()">PREENCHER AUTOMÁTICO</button>
-                </div>
+                <div class="form-group"><label>Número da Nota</label><input oninput="update('nota_num', this.value)"></div>
+                <div class="form-group"><label>Data de Emissão</label><input oninput="update('data_emissao', this.value)"></div>
+                <div class="form-group full"><label>Leiloeiro</label><input oninput="update('leiloeiro', this.value)"></div>
+                <div class="form-group full"><label>JUCESP</label><input oninput="update('jucesp', this.value)"></div>
             </div>
         </section>
 
-        <section class="field-panel active" data-panel-content="cabecalho">
-            <h3>Dados da Nota de Venda</h3>
+        <section class="field-panel" id="panel-destinatario">
             <div class="field-grid">
-                <div class="form-group"><label>Número da Nota</label><input id="field-nota_num" value="" oninput="updatePreview('nota_num', this.value)"></div>
-                <div class="form-group"><label>Data de Emissão</label><input id="field-data_emissao" value="" oninput="updatePreview('data_emissao', this.value)"></div>
-                <div class="field-subtitle">Dados do Leiloeiro</div>
-                <div class="form-group full"><label>Nome Leiloeiro</label><input id="field-leiloeiro" value="" oninput="updatePreview('leiloeiro', this.value)"></div>
-                <div class="form-group full"><label>Inscrição JUCESP</label><input id="field-jucesp" value="" oninput="updatePreview('jucesp', this.value)"></div>
+                <div class="form-group"><label>Cód. Cliente</label><input oninput="update('cod_cliente', this.value)"></div>
+                <div class="form-group"><label>CPF / CNPJ</label><input oninput="update('cnpj', this.value)"></div>
+                <div class="form-group full"><label>Nome do Cliente</label><input oninput="update('cliente_nome', this.value)"></div>
+                <div class="form-group full"><label>Endereço</label><input oninput="update('endereco', this.value)"></div>
+                <div class="form-group"><label>Município</label><input oninput="update('municipio', this.value)"></div>
+                <div class="form-group"><label>UF</label><input oninput="update('uf', this.value)"></div>
+                <div class="form-group full"><label>E-mail</label><input oninput="update('email', this.value)"></div>
+                <div class="form-group"><label>Inscr. Estadual</label><input oninput="update('ie', this.value)"></div>
+                <div class="form-group"><label>Leilão Nº</label><input oninput="update('leilao_num', this.value)"></div>
+                <div class="form-group full"><label>Data do Leilão</label><input oninput="update('data_leilao', this.value)"></div>
             </div>
         </section>
 
-        <section class="field-panel" data-panel-content="destinatario">
-            <h3>Destinatário das Mercadorias</h3>
+        <section class="field-panel" id="panel-mercadorias">
             <div class="field-grid">
-                <div class="form-group"><label>Cod. Cliente</label><input id="field-cod_cliente" value="" oninput="updatePreview('cod_cliente', this.value)"></div>
-                <div class="form-group"><label>CPF / CNPJ</label><input id="field-cnpj" value="" oninput="updatePreview('cnpj', this.value)"></div>
-                <div class="form-group full"><label>Nome do Cliente</label><input id="field-cliente_nome" value="" oninput="updatePreview('cliente_nome', this.value)"></div>
-                <div class="form-group full"><label>Endereço / CEP</label><input id="field-endereco" value="" oninput="updatePreview('endereco', this.value)"></div>
-                <div class="form-group"><label>Município</label><input id="field-municipio" value="" oninput="updatePreview('municipio', this.value)"></div>
-                <div class="form-group"><label>Estado (UF)</label><input id="field-uf" value="" oninput="updatePreview('uf', this.value)"></div>
-                <div class="form-group full"><label>E-mail</label><input id="field-email" value="" oninput="updatePreview('email', this.value)"></div>
-                <div class="form-group"><label>Inscr. Estadual</label><input id="field-ie" value="" oninput="updatePreview('ie', this.value)"></div>
-                <div class="form-group"><label>Leilão Nº</label><input id="field-leilao_num" value="" oninput="updatePreview('leilao_num', this.value)"></div>
-                <div class="form-group full"><label>Data do Leilão</label><input id="field-data_leilao" value="" oninput="updatePreview('data_leilao', this.value)"></div>
+                <div class="form-group"><label>Lote</label><input oninput="update('lote', this.value)"></div>
+                <div class="form-group"><label>Preço (R$)</label><input oninput="update('preco_lote', this.value)"></div>
+                <div class="form-group full"><label>Descrição Completa</label><textarea rows="6" oninput="update('descricao', this.value)"></textarea></div>
             </div>
         </section>
 
-        <section class="field-panel" data-panel-content="mercadorias">
-            <h3>Descrição das Mercadorias</h3>
+        <section class="field-panel" id="panel-valores">
             <div class="field-grid">
-                <div class="form-group"><label>Lote</label><input id="field-lote" value="" oninput="updatePreview('lote', this.value)"></div>
-                <div class="form-group"><label>Preço (R$)</label><input id="field-preco_lote" value="" oninput="updatePreview('preco_lote', this.value)"></div>
-                <div class="form-group full">
-                    <label>Descrição Completa</label>
-                    <textarea id="field-descricao" rows="6" oninput="updatePreview('descricao', this.value)"></textarea>
-                </div>
+                <div class="form-group full"><label>Valor Mercadorias</label><input oninput="update('val_mercadorias', this.value)"></div>
+                <div class="form-group full"><label>Comissão (5%)</label><input oninput="update('comissao', this.value)"></div>
+                <div class="form-group full"><label>Valor Total</label><input oninput="update('val_total', this.value)"></div>
             </div>
         </section>
 
-        <section class="field-panel" data-panel-content="valores">
-            <h3>Totais da Nota</h3>
-            <div class="field-grid">
-                <div class="form-group full"><label>Valor Das Mercadorias</label><input id="field-val_mercadorias" value="" oninput="updatePreview('val_mercadorias', this.value)"></div>
-                <div class="form-group full"><label>Comissão de 5%</label><input id="field-comissao" value="" oninput="updatePreview('comissao', this.value)"></div>
-                <div class="form-group full"><label>Valor Total da Nota</label><input id="field-val_total" value="" oninput="updatePreview('val_total', this.value)"></div>
-                <div class="field-subtitle">Rodapé de Recibo</div>
-                <div class="form-group full"><label>Número Nota Rodapé</label><input id="field-nota_rodape" value="" oninput="updatePreview('nota_rodape', this.value)"></div>
-            </div>
-        </section>
-
-        <button class="btn-save" onclick="window.print()">GERAR PDF / IMPRIMIR</button>
+        <button class="btn-save" onclick="window.print()">IMPRIMIR / GERAR PDF</button>
     </div>
 
     <div class="preview-area">
         <div class="document-container">
-            <img src="nota-de-venda.png" class="pdf-bg">
-
-            <!-- CABEÇALHO DA NOTA -->
-            <div id="pv-leiloeiro" class="overlay-text" style="top: 75px; left: 55px; width: 175px; font-weight: bold; font-size: 15px; text-align: center;"></div>
-            <div id="pv-jucesp" class="overlay-text" style="top: 171px; left: 236px; width: 35px; font-size: 10px;"></div>
-            <div id="pv-nota_num" class="overlay-text" style="top: 86px; left: 618px; width: 120px; font-weight: bold; font-size: 17px; text-align: center;"></div>
-            <div id="pv-data_emissao" class="overlay-text" style="top: 147px; left: 618px; width: 120px; font-size: 12px; text-align: center;"></div>
+            <!-- CABEÇALHO -->
+            <div class="grid-header">
+                <div class="box">
+                    <div class="label-title">Vendido por:</div>
+                    <div class="val-text" id="pv-leiloeiro" style="font-size: 14px; text-align: center; margin-top: 10px;"></div>
+                    <div style="font-size: 9px; text-align: center; margin-top: 15px;">LEILOEIRO OFICIAL</div>
+                    <div style="font-size: 8px; text-align: center; margin-top: 10px;">INSCRIÇÃO NA JUCESP: <span id="pv-jucesp"></span></div>
+                </div>
+                <div class="box">
+                    <div class="label-title">Local da Retirada:</div>
+                </div>
+                <div class="box" style="text-align: center;">
+                    <div style="font-weight: bold; font-size: 16px; margin-top: 5px;">NOTA DE VENDA</div>
+                    <div class="val-text" id="pv-nota_num" style="font-size: 20px; margin-top: 15px;"></div>
+                    <div class="label-title" style="margin-top: 15px;">DATA DE EMISSÃO</div>
+                    <div class="val-text" id="pv-data_emissao"></div>
+                </div>
+            </div>
 
             <!-- DESTINATÁRIO -->
-            <div id="pv-cod_cliente" class="overlay-text" style="top: 218px; left: 165px; width: 100px; font-weight: bold;"></div>
-            <div id="pv-cliente_nome" class="overlay-text" style="top: 243px; left: 165px; width: 550px; font-weight: bold;"></div>
-            <div id="pv-endereco" class="overlay-text" style="top: 268px; left: 165px; width: 560px;"></div>
-            <div id="pv-municipio" class="overlay-text" style="top: 293px; left: 110px; width: 280px;"></div>
-            <div id="pv-uf" class="overlay-text" style="top: 293px; left: 470px; width: 30px;"></div>
-            <div id="pv-email" class="overlay-text" style="top: 293px; left: 565px; width: 165px;"></div>
-            <div id="pv-cnpj" class="overlay-text" style="top: 318px; left: 160px; width: 200px;"></div>
-            <div id="pv-ie" class="overlay-text" style="top: 318px; left: 512px; width: 200px;"></div>
-            <div id="pv-leilao_num" class="overlay-text" style="top: 342px; left: 95px; width: 100px;"></div>
-            <div id="pv-data_leilao" class="overlay-text" style="top: 342px; left: 512px; width: 120px;"></div>
+            <div class="box">
+                <div class="label-title" style="text-align: center; border-bottom: 1px solid #000; padding-bottom: 3px; margin-bottom: 6px;">DESTINATÁRIO DAS MERCADORIAS</div>
+                <div class="grid-destinatario">
+                    <div class="col-4"><span class="label-title">COD. DO CLIENTE:</span> <span class="val-text" id="pv-cod_cliente"></span></div>
+                    <div class="col-8"><span class="label-title">NOME DO CLIENTE:</span> <span class="val-text" id="pv-cliente_nome"></span></div>
+                    <div class="col-12"><span class="label-title">ENDEREÇO / CEP:</span> <span class="val-text" id="pv-endereco"></span></div>
+                    <div class="col-6"><span class="label-title">MUNICÍPIO:</span> <span class="val-text" id="pv-municipio"></span></div>
+                    <div class="col-2"><span class="label-title">UF:</span> <span class="val-text" id="pv-uf"></span></div>
+                    <div class="col-4"><span class="label-title">E-MAIL:</span> <span class="val-text" id="pv-email"></span></div>
+                    <div class="col-6"><span class="label-title">CNPJ/CPF:</span> <span class="val-text" id="pv-cnpj"></span></div>
+                    <div class="col-6"><span class="label-title">INSCR. ESTADUAL:</span> <span class="val-text" id="pv-ie"></span></div>
+                    <div class="col-6"><span class="label-title">LEILÃO:</span> <span class="val-text" id="pv-leilao_num"></span></div>
+                    <div class="col-6"><span class="label-title">DATA DO LEILÃO:</span> <span class="val-text" id="pv-data_leilao"></span></div>
+                </div>
+            </div>
 
-            <!-- TABELA DE MERCADORIAS -->
-            <div id="pv-lote" class="overlay-text" style="top: 393px; left: 45px; width: 30px; text-align: center;"></div>
-            <div id="pv-descricao" class="overlay-text" style="top: 393px; left: 85px; width: 570px; font-size: 11px; line-height: 1.25;"></div>
-            <div id="pv-preco_lote" class="overlay-text" style="top: 393px; left: 665px; width: 75px; text-align: right;"></div>
+            <!-- TABELA MERCADORIAS -->
+            <div class="table-items">
+                <div class="table-head">
+                    <div class="col-lote">LOTE</div>
+                    <div class="col-desc">DESCRIÇÃO DAS MERCADORIAS</div>
+                    <div class="col-preco">PREÇOS R$</div>
+                </div>
+                <div class="table-body">
+                    <div class="col-lote val-text" id="pv-lote"></div>
+                    <div class="col-desc val-text" id="pv-descricao" style="font-weight: normal;"></div>
+                    <div class="col-preco val-text" id="pv-preco_lote"></div>
+                </div>
+            </div>
 
-            <!-- TOTAIS E VALORES -->
-            <div id="pv-val_mercadorias" class="overlay-text" style="top: 803px; left: 665px; width: 75px; text-align: right;"></div>
-            <div id="pv-comissao" class="overlay-text" style="top: 825px; left: 665px; width: 75px; text-align: right;"></div>
-            <div id="pv-val_total" class="overlay-text" style="top: 847px; left: 665px; width: 75px; text-align: right; font-weight: bold;"></div>
+            <!-- RODAPÉ E VALORES -->
+            <div class="grid-foot">
+                <div class="box foot-notice">
+                    AS MERCADORIAS SERÃO VENDIDAS NAS CONDIÇÕES EM QUE SE ENCONTRAM, UMA VEZ EFETUADA A VENDA, NÃO MAIS SE ACEITAM RECLAMAÇÕES.
+                </div>
+                <div class="box foot-notice">
+                    NOTA SEM NATUREZA FISCAL. O LEILOEIRO EMITENTE NÃO SE CONFUNDE COM O EMBARCADOR OU PROPRIETÁRIO.
+                </div>
+                <div class="box">
+                    <div class="totais-row"><span>VALOR MERCADORIAS:</span><strong id="pv-val_mercadorias"></strong></div>
+                    <div class="totais-row"><span>COMISSÃO DE 5%:</span><strong id="pv-comissao"></strong></div>
+                    <div class="totais-row" style="font-size: 13px; border-top: 1px solid #000; padding-top: 4px;"><span>VALOR TOTAL:</span><strong id="pv-val_total"></strong></div>
+                </div>
+            </div>
 
-            <!-- RODAPÉ DA NOTA -->
-            <div id="pv-nota_rodape" class="overlay-text" style="top: 912px; left: 95px; width: 90px; text-align: center; font-weight: bold; font-size: 14px;"></div>
+            <div class="box" style="height: 70px;">
+                <div class="label-title">Recebemos / retiramos as mercadorias constantes da Nota de Venda supra, nesta data.</div>
+                <div style="display: flex; justify-content: space-between; margin-top: 30px; font-size: 10px;">
+                    <span>Local: ________________________</span>
+                    <span>Data: _____/_____/_________</span>
+                    <span>Assinatura: ________________________</span>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        function showPanel(panel) {
-            document.querySelectorAll('.section-tab').forEach((tab) => {
-                tab.classList.toggle('active', tab.dataset.panel === panel);
-            });
-            document.querySelectorAll('.field-panel').forEach((section) => {
-                section.classList.toggle('active', section.dataset.panelContent === panel);
-            });
+        function showPanel(id) {
+            document.querySelectorAll('.field-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('panel-' + id).classList.add('active');
+            event.target.classList.add('active');
         }
-
-        function updatePreview(id, val) {
-            const previewEl = document.getElementById('pv-' + id);
-            if (previewEl) previewEl.innerText = val;
-            const summaryEl = document.getElementById('sum-' + id);
-            if (summaryEl) summaryEl.innerText = val || '-';
-            if (id === 'nota_num' && !document.getElementById('field-nota_rodape').value) {
-                const rodapeInput = document.getElementById('field-nota_rodape');
-                if (rodapeInput) {
-                    rodapeInput.value = val;
-                    const rodapePreview = document.getElementById('pv-nota_rodape');
-                    if (rodapePreview) rodapePreview.innerText = val;
-                }
-            }
-        }
-
-        function applyAutoFill() {
-            const text = document.getElementById('autofill-text').value;
-            const lines = text.split('\n');
-            lines.forEach(line => {
-                const parts = line.split(':');
-                if (parts.length >= 2) {
-                    const key = parts[0].trim().toUpperCase();
-                    const value = parts.slice(1).join(':').trim();
-                    if (!value) return;
-
-                    if (key === 'NOTA' || key === 'NUMERO DA NOTA') setField('nota_num', value);
-                    else if (key === 'EMISSAO' || key === 'DATA DE EMISSAO') setField('data_emissao', value);
-                    else if (key === 'LEILOEIRO') setField('leiloeiro', value);
-                    else if (key === 'JUCESP') setField('jucesp', value);
-                    else if (key === 'CODIGO CLIENTE' || key === 'COD CLIENTE') setField('cod_cliente', value);
-                    else if (key === 'CLIENTE' || key === 'NOME CLIENTE') setField('cliente_nome', value);
-                    else if (key === 'ENDERECO') setField('endereco', value);
-                    else if (key === 'MUNICIPIO') setField('municipio', value);
-                    else if (key === 'UF' || key === 'ESTADO') setField('uf', value);
-                    else if (key === 'EMAIL') setField('email', value);
-                    else if (key === 'CPF' || key === 'CNPJ') setField('cnpj', value);
-                    else if (key === 'IE' || key === 'INSCR ESTADUAL') setField('ie', value);
-                    else if (key === 'LEILAO') setField('leilao_num', value);
-                    else if (key === 'DATA LEILAO') setField('data_leilao', value);
-                    else if (key === 'LOTE') setField('lote', value);
-                    else if (key === 'PRECO') setField('preco_lote', value);
-                    else if (key === 'VALOR MERCADORIAS') setField('val_mercadorias', value);
-                    else if (key === 'COMISSAO') setField('comissao', value);
-                    else if (key === 'TOTAL') setField('val_total', value);
-                }
-            });
-        }
-
-        function setField(id, val) {
-            const input = document.getElementById('field-' + id);
-            if (input) {
-                input.value = val;
-                updatePreview(id, val);
-            }
+        function update(id, val) {
+            const el = document.getElementById('pv-' + id);
+            if (el) el.innerText = val;
         }
     </script>
 </body>
