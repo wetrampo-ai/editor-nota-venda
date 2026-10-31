@@ -105,10 +105,20 @@
         .grid-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .foot-notice { font-size: 9px; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; padding: 10px; }
 
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
         @media print {
+            html, body {
+                width: 210mm;
+                height: 297mm;
+                background: #fff;
+            }
             .sidebar { display: none; }
-            .preview-area { padding: 0; background: none; }
-            .document-container { box-shadow: none; width: 100%; height: 100vh; }
+            .preview-area { padding: 0; background: none; overflow: visible; }
+            .document-container { box-shadow: none; width: 210mm; height: 297mm; max-height: 297mm; padding: 20px; margin: 0; }
         }
     </style>
 </head>
@@ -230,7 +240,7 @@
                 </div>
             </div>
 
-            <!-- RODAPÉ DE AVISOS (SEM QUADRO DE VALORES NEM RECIBO) -->
+            <!-- RODAPÉ DE AVISOS -->
             <div class="grid-foot">
                 <div class="box foot-notice">
                     AS MERCADORIAS SERÃO VENDIDAS NAS CONDIÇÕES EM QUE SE ENCONTRAM, UMA VEZ EFETUADA A VENDA, NÃO MAIS SE ACEITAM RECLAMAÇÕES.
@@ -303,7 +313,7 @@
             if (data['MODELO']) descParts.push(`Modelo: ${data['MODELO']}`);
             if (data['PLACA']) descParts.push(`Placa: ${data['PLACA']}`);
             if (data['CHASSI']) descParts.push(`Chassi: ${data['CHASSI']}`);
-            if (data['RENAVAM']) descParts.push(`Renavam: ${data['RENAVAM']}`);
+            if (data['RENAVAM']) descParts.json ? null : descParts.push(`Renavam: ${data['RENAVAM']}`);
             if (data['ANO FABMOD']) descParts.push(`Ano Fab/Mod: ${data['ANO FABMOD']}`);
             if (data['COR']) descParts.push(`Cor: ${data['COR']}`);
             if (data['COMBUSTIVEL']) descParts.push(`Combustível: ${data['COMBUSTIVEL']}`);
