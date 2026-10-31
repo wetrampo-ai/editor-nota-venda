@@ -102,9 +102,8 @@
         .col-desc { flex: 1; border-right: 2px solid #000; padding: 6px; white-space: pre-wrap; font-family: Arial, Helvetica, sans-serif; font-size: 11px; line-height: 1.35; color: #000; }
         .col-preco { width: 110px; padding: 6px; text-align: right; }
         
-        .grid-foot { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; }
-        .foot-notice { font-size: 8px; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; }
-        .totais-row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; }
+        .grid-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .foot-notice { font-size: 9px; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; padding: 10px; }
 
         @media print {
             .sidebar { display: none; }
@@ -117,7 +116,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Editor de Nota de Venda</h2>
-            <p>Preenchimento automático estendido</p>
+            <p>Preenchimento automático otimizado</p>
         </div>
 
         <div class="section-tabs">
@@ -125,7 +124,6 @@
             <button class="section-tab" onclick="showPanel('destinatario')">Destinatário</button>
             <button class="section-tab" onclick="showPanel('mercadorias')">Mercadorias</button>
             <button class="section-tab" onclick="showPanel('cabecalho')">Cabeçalho</button>
-            <button class="section-tab" onclick="showPanel('valores')">Valores</button>
         </div>
 
         <section class="field-panel active" id="panel-auto">
@@ -175,14 +173,6 @@
             </div>
         </section>
 
-        <section class="field-panel" id="panel-valores">
-            <div class="field-grid">
-                <div class="form-group full"><label>Valor Mercadorias</label><input id="field-val_mercadorias" oninput="update('val_mercadorias', this.value)"></div>
-                <div class="form-group full"><label>Comissão (5%)</label><input id="field-comissao" oninput="update('comissao', this.value)"></div>
-                <div class="form-group full"><label>Valor Total</label><input id="field-val_total" oninput="update('val_total', this.value)"></div>
-            </div>
-        </section>
-
         <button class="btn-print" onclick="window.print()">IMPRIMIR / GERAR PDF</button>
     </div>
 
@@ -227,7 +217,7 @@
             </div>
 
             <!-- TABELA MERCADORIAS -->
-            <div class="table-items">
+            <div class="table-items" style="flex: 1;">
                 <div class="table-head">
                     <div class="col-lote">LOTE</div>
                     <div class="col-desc">DESCRIÇÃO DAS MERCADORIAS</div>
@@ -240,27 +230,13 @@
                 </div>
             </div>
 
-            <!-- RODAPÉ E VALORES -->
+            <!-- RODAPÉ DE AVISOS (SEM QUADRO DE VALORES NEM RECIBO) -->
             <div class="grid-foot">
                 <div class="box foot-notice">
                     AS MERCADORIAS SERÃO VENDIDAS NAS CONDIÇÕES EM QUE SE ENCONTRAM, UMA VEZ EFETUADA A VENDA, NÃO MAIS SE ACEITAM RECLAMAÇÕES.
                 </div>
                 <div class="box foot-notice">
                     NOTA SEM NATUREZA FISCAL. O LEILOEIRO EMITENTE NÃO SE CONFUNDE COM O EMBARCADOR OU PROPRIETÁRIO.
-                </div>
-                <div class="box">
-                    <div class="totais-row"><span>VALOR MERCADORIAS:</span><strong id="pv-val_mercadorias"></strong></div>
-                    <div class="totais-row"><span>COMISSÃO DE 5%:</span><strong id="pv-comissao"></strong></div>
-                    <div class="totais-row" style="font-size: 13px; border-top: 1px solid #000; padding-top: 4px;"><span>VALOR TOTAL:</span><strong id="pv-val_total"></strong></div>
-                </div>
-            </div>
-
-            <div class="box" style="height: 70px;">
-                <div class="label-title">Recebemos / retiramos as mercadorias constantes da Nota de Venda supra, nesta data.</div>
-                <div style="display: flex; justify-content: space-between; margin-top: 30px; font-size: 10px;">
-                    <span>Local: ________________________</span>
-                    <span>Data: _____/_____/_________</span>
-                    <span>Assinatura: ________________________</span>
                 </div>
             </div>
         </div>
@@ -302,16 +278,12 @@
                 }
             });
 
-            // Mapeamento direto e completo
             update('nota_num', data['NOTA'] || data['NUMERO DA NOTA'] || '');
             update('data_emissao', data['EMISSAO'] || data['DATA DE EMISSAO'] || '');
             update('leiloeiro', data['LEILOEIRO'] || '');
             update('jucesp', data['JUCESP'] || '');
             update('lote', data['LOTE'] || '');
             update('preco_lote', data['PRECO'] || data['VALOR'] || '');
-            update('val_mercadorias', data['VALOR MERCADORIAS'] || data['PRECO'] || '');
-            update('comissao', data['COMISSAO'] || '');
-            update('val_total', data['TOTAL'] || data['VALOR TOTAL'] || '');
 
             if (data['PATIO']) update('patio', 'Pátio: ' + data['PATIO']);
             if (data['VAGA']) update('vaga', 'Vaga: ' + data['VAGA']);
@@ -327,7 +299,6 @@
             update('leilao_num', data['LEILAO'] || '');
             update('data_leilao', data['DATA LEILAO'] || '');
 
-            // Montagem da Descrição das Mercadorias
             let descParts = [];
             if (data['MODELO']) descParts.push(`Modelo: ${data['MODELO']}`);
             if (data['PLACA']) descParts.push(`Placa: ${data['PLACA']}`);
@@ -346,7 +317,7 @@
                 update('descricao', descParts.join(' | '));
             }
 
-            alert('Todos os campos foram preenchidos com sucesso!');
+            alert('Preenchimento automático concluído com sucesso!');
         }
     </script>
 </body>
