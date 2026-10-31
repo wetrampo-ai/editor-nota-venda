@@ -35,7 +35,7 @@
         
         .section-tabs {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 6px;
             margin-bottom: 14px;
         }
@@ -59,7 +59,8 @@
         .form-group label { display: block; font-size: 10px; font-weight: 700; color: #64748b; margin-bottom: 3px; }
         .form-group input, .form-group textarea { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; }
 
-        .btn-save { width: 100%; background: #0f766e; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; }
+        .btn-save { width: 100%; background: #0070f3; color: white; padding: 14px; border: none; border-radius: 6px; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; }
+        .btn-print { width: 100%; background: #0f766e; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; margin-top: 10px; }
 
         .preview-area {
             flex: 1;
@@ -70,7 +71,6 @@
             background: #3f3f46;
         }
         
-        /* ESTRUTURA DA NOTA DIGITAL (SEM DEPENDER DE IMAGEM) */
         .document-container {
             width: 794px;
             height: 1123px;
@@ -86,9 +86,10 @@
         .grid-header { display: grid; grid-template-columns: 2fr 3fr 2fr; gap: 8px; height: 140px; }
         .grid-destinatario { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; }
         .col-12 { grid-column: span 12; }
+        .col-8 { grid-column: span 8; }
         .col-6 { grid-column: span 6; }
         .col-4 { grid-column: span 4; }
-        .col-3 { grid-column: span 3; }
+        .col-2 { grid-column: span 2; }
         
         .label-title { font-size: 9px; font-weight: bold; color: #333; text-transform: uppercase; margin-bottom: 2px; }
         .val-text { font-size: 12px; font-weight: bold; min-height: 14px; color: #000; }
@@ -97,7 +98,7 @@
         .table-head { display: flex; border-bottom: 2px solid #000; font-weight: bold; text-align: center; background: #f8fafc; }
         .table-body { display: flex; flex: 1; }
         .col-lote { width: 60px; border-right: 2px solid #000; padding: 6px; text-align: center; }
-        .col-desc { flex: 1; border-right: 2px solid #000; padding: 6px; white-space: pre-wrap; }
+        .col-desc { flex: 1; border-right: 2px solid #000; padding: 6px; white-space: pre-wrap; font-family: monospace; font-size: 11px; }
         .col-preco { width: 110px; padding: 6px; text-align: right; }
         
         .grid-foot { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; }
@@ -115,57 +116,71 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Editor de Nota de Venda</h2>
-            <p>Preencha os campos abaixo</p>
+            <p>Preenchimento rápido e automático</p>
         </div>
 
         <div class="section-tabs">
-            <button class="section-tab active" onclick="showPanel('cabecalho')">Cabeçalho</button>
+            <button class="section-tab active" onclick="showPanel('auto')">Auto Preencher</button>
             <button class="section-tab" onclick="showPanel('destinatario')">Destinatário</button>
             <button class="section-tab" onclick="showPanel('mercadorias')">Mercadorias</button>
+            <button class="section-tab" onclick="showPanel('cabecalho')">Cabeçalho</button>
             <button class="section-tab" onclick="showPanel('valores')">Valores</button>
         </div>
 
-        <section class="field-panel active" id="panel-cabecalho">
+        <section class="field-panel active" id="panel-auto">
+            <h3>Preenchimento automático</h3>
+            <p style="font-size: 11px; color: #64748b;">Cole o relatório do veículo ou dados da nota abaixo:</p>
             <div class="field-grid">
-                <div class="form-group"><label>Número da Nota</label><input oninput="update('nota_num', this.value)"></div>
-                <div class="form-group"><label>Data de Emissão</label><input oninput="update('data_emissao', this.value)"></div>
-                <div class="form-group full"><label>Leiloeiro</label><input oninput="update('leiloeiro', this.value)"></div>
-                <div class="form-group full"><label>JUCESP</label><input oninput="update('jucesp', this.value)"></div>
+                <div class="form-group full">
+                    <textarea id="autofill-text" rows="14" placeholder="Cole aqui o relatório (ex: DADOS DO VEÍCULO, PROPRIETÁRIO, etc)..."></textarea>
+                </div>
+                <div class="form-group full">
+                    <button type="button" class="btn-save" onclick="applyAutoFill()">PREENCHER AUTOMÁTICO</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="field-panel" id="panel-cabecalho">
+            <div class="field-grid">
+                <div class="form-group"><label>Número da Nota</label><input id="field-nota_num" oninput="update('nota_num', this.value)"></div>
+                <div class="form-group"><label>Data de Emissão</label><input id="field-data_emissao" oninput="update('data_emissao', this.value)"></div>
+                <div class="form-group full"><label>Leiloeiro</label><input id="field-leiloeiro" oninput="update('leiloeiro', this.value)"></div>
+                <div class="form-group full"><label>JUCESP</label><input id="field-jucesp" oninput="update('jucesp', this.value)"></div>
             </div>
         </section>
 
         <section class="field-panel" id="panel-destinatario">
             <div class="field-grid">
-                <div class="form-group"><label>Cód. Cliente</label><input oninput="update('cod_cliente', this.value)"></div>
-                <div class="form-group"><label>CPF / CNPJ</label><input oninput="update('cnpj', this.value)"></div>
-                <div class="form-group full"><label>Nome do Cliente</label><input oninput="update('cliente_nome', this.value)"></div>
-                <div class="form-group full"><label>Endereço</label><input oninput="update('endereco', this.value)"></div>
-                <div class="form-group"><label>Município</label><input oninput="update('municipio', this.value)"></div>
-                <div class="form-group"><label>UF</label><input oninput="update('uf', this.value)"></div>
-                <div class="form-group full"><label>E-mail</label><input oninput="update('email', this.value)"></div>
-                <div class="form-group"><label>Inscr. Estadual</label><input oninput="update('ie', this.value)"></div>
-                <div class="form-group"><label>Leilão Nº</label><input oninput="update('leilao_num', this.value)"></div>
-                <div class="form-group full"><label>Data do Leilão</label><input oninput="update('data_leilao', this.value)"></div>
+                <div class="form-group"><label>Cód. Cliente</label><input id="field-cod_cliente" oninput="update('cod_cliente', this.value)"></div>
+                <div class="form-group"><label>CPF / CNPJ</label><input id="field-cnpj" oninput="update('cnpj', this.value)"></div>
+                <div class="form-group full"><label>Nome do Cliente</label><input id="field-cliente_nome" oninput="update('cliente_nome', this.value)"></div>
+                <div class="form-group full"><label>Endereço</label><input id="field-endereco" oninput="update('endereco', this.value)"></div>
+                <div class="form-group"><label>Município</label><input id="field-municipio" oninput="update('municipio', this.value)"></div>
+                <div class="form-group"><label>UF</label><input id="field-uf" oninput="update('uf', this.value)"></div>
+                <div class="form-group full"><label>E-mail</label><input id="field-email" oninput="update('email', this.value)"></div>
+                <div class="form-group"><label>Inscr. Estadual</label><input id="field-ie" oninput="update('ie', this.value)"></div>
+                <div class="form-group"><label>Leilão Nº</label><input id="field-leilao_num" oninput="update('leilao_num', this.value)"></div>
+                <div class="form-group full"><label>Data do Leilão</label><input id="field-data_leilao" oninput="update('data_leilao', this.value)"></div>
             </div>
         </section>
 
         <section class="field-panel" id="panel-mercadorias">
             <div class="field-grid">
-                <div class="form-group"><label>Lote</label><input oninput="update('lote', this.value)"></div>
-                <div class="form-group"><label>Preço (R$)</label><input oninput="update('preco_lote', this.value)"></div>
-                <div class="form-group full"><label>Descrição Completa</label><textarea rows="6" oninput="update('descricao', this.value)"></textarea></div>
+                <div class="form-group"><label>Lote</label><input id="field-lote" oninput="update('lote', this.value)"></div>
+                <div class="form-group"><label>Preço (R$)</label><input id="field-preco_lote" oninput="update('preco_lote', this.value)"></div>
+                <div class="form-group full"><label>Descrição Completa</label><textarea id="field-descricao" rows="8" oninput="update('descricao', this.value)"></textarea></div>
             </div>
         </section>
 
         <section class="field-panel" id="panel-valores">
             <div class="field-grid">
-                <div class="form-group full"><label>Valor Mercadorias</label><input oninput="update('val_mercadorias', this.value)"></div>
-                <div class="form-group full"><label>Comissão (5%)</label><input oninput="update('comissao', this.value)"></div>
-                <div class="form-group full"><label>Valor Total</label><input oninput="update('val_total', this.value)"></div>
+                <div class="form-group full"><label>Valor Mercadorias</label><input id="field-val_mercadorias" oninput="update('val_mercadorias', this.value)"></div>
+                <div class="form-group full"><label>Comissão (5%)</label><input id="field-comissao" oninput="update('comissao', this.value)"></div>
+                <div class="form-group full"><label>Valor Total</label><input id="field-val_total" oninput="update('val_total', this.value)"></div>
             </div>
         </section>
 
-        <button class="btn-save" onclick="window.print()">IMPRIMIR / GERAR PDF</button>
+        <button class="btn-print" onclick="window.print()">IMPRIMIR / GERAR PDF</button>
     </div>
 
     <div class="preview-area">
@@ -253,9 +268,62 @@
             document.getElementById('panel-' + id).classList.add('active');
             event.target.classList.add('active');
         }
+
         function update(id, val) {
             const el = document.getElementById('pv-' + id);
             if (el) el.innerText = val;
+            const input = document.getElementById('field-' + id);
+            if (input && input.value !== val) input.value = val;
+        }
+
+        function applyAutoFill() {
+            const rawText = document.getElementById('autofill-text').value;
+            const lines = rawText.split('\n');
+
+            let parsed = {};
+            
+            lines.forEach(line => {
+                const parts = line.split(':');
+                if (parts.length >= 2) {
+                    const key = parts[0].replace(/[^\w\sÀ-ú]/gi, '').trim().toUpperCase();
+                    const val = parts.slice(1).join(':').trim();
+                    if (key && val) parsed[key] = val;
+                }
+            });
+
+            // Preenchimento de Proprietário / Destinatário
+            if (parsed['NOME']) update('cliente_nome', parsed['NOME']);
+            if (parsed['DOCUMENTO']) update('cnpj', parsed['DOCUMENTO']);
+            if (parsed['EMPLACAMENTO']) {
+                const emp = parsed['EMPLACAMENTO'].split('/');
+                if (emp[0]) update('municipio', emp[0].trim());
+                if (emp[1]) update('uf', emp[1].trim());
+            }
+
+            // Construção da Descrição das Mercadorias
+            let desc = '';
+            if (parsed['MODELO']) desc += `Modelo: ${parsed['MODELO']} | `;
+            if (parsed['PLACA']) desc += `Placa: ${parsed['PLACA']}\n`;
+            if (parsed['CHASSI']) desc += `Chassi: ${parsed['CHASSI']} | `;
+            if (parsed['RENAVAM']) desc += `Renavam: ${parsed['RENAVAM']}\n`;
+            if (parsed['ANO FABMOD']) desc += `Ano Fab/Mod: ${parsed['ANO FABMOD']} | `;
+            if (parsed['COR']) desc += `Cor: ${parsed['COR']} | `;
+            if (parsed['COMBUSTÍVEL'] || parsed['COMBUSTIVEL']) desc += `Combustível: ${parsed['COMBUSTÍVEL'] || parsed['COMBUSTIVEL']}\n`;
+            if (parsed['NÚMERO DO MOTOR'] || parsed['NUMERO DO MOTOR']) desc += `Nº Motor: ${parsed['NÚMERO DO MOTOR'] || parsed['NUMERO DO MOTOR']}\n`;
+            if (parsed['RESTRIÇÃO 1'] || parsed['RESTRICAO 1']) desc += `Restrição: ${parsed['RESTRIÇÃO 1'] || parsed['RESTRICAO 1']}`;
+
+            if (desc.trim()) {
+                update('descricao', desc.trim());
+            }
+
+            // Suporte aos campos genéricos padrão
+            if (parsed['NOTA'] || parsed['NUMERO DA NOTA']) update('nota_num', parsed['NOTA'] || parsed['NUMERO DA NOTA']);
+            if (parsed['EMISSAO'] || parsed['DATA DE EMISSAO']) update('data_emissao', parsed['EMISSAO'] || parsed['DATA DE EMISSAO']);
+            if (parsed['LOTE']) update('lote', parsed['LOTE']);
+            if (parsed['PRECO']) update('preco_lote', parsed['PRECO']);
+            if (parsed['TOTAL']) update('val_total', parsed['TOTAL']);
+
+            alert('Dados preenchidos com sucesso!');
         }
     </script>
 </body>
